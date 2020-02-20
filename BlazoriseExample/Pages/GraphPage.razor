@@ -1,0 +1,128 @@
+﻿@page "/GraphPage"
+@{
+    var Titel = "Graph";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-1">
+        <div class="row">
+                <RadarChart @ref="radarChart" Type="ChartType.Radar" TItem="double" />
+        </div>
+    </div>
+</div>
+@code{
+    [Parameter]
+    public int FunctionId { get; set; }
+    [Parameter]
+    public int ColumnId { get; set; }
+
+    RadarChart<double> radarChart;
+
+    bool isAlreadyInitialised;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        radarChart = new RadarChart<double>();
+        radarChart.Clear();
+
+        radarChart.AddLabel(new string[] { "", "", "", "", "", "", "", "", });
+        //RadarChart.AddLabel(new string[] { "Axis 1","Axis 2", "Axis 4",
+        //     "Axis 5", "Axis 7","Axis 8", "Axis 10", "Axis 11" });
+
+        radarChart.AddDataSet(GetRadarChartDataset().Result);
+        try
+        {
+            await radarChart.Update();
+
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+
+    List<string> BackgroundColorRole = new List<string> {
+        ChartColor.FromRgba(206, 226, 29, 0.2f),
+    };
+    List<string> BackgroundColorCoreValue = new List<string> {
+        ChartColor.FromRgba(255, 0, 0, 0.2f)
+    };
+    List<string> BackgroundColorVaardigheid = new List<string> {
+        ChartColor.FromRgba(0, 0,255, 0.2f)
+    };
+    List<string> BorderColorRole = new List<string> {
+        ChartColor.FromRgba(206, 226, 29, 1f),
+    };
+    List<string> BorderColorCoreValue = new List<string> {
+        ChartColor.FromRgba(255, 0, 0, 1f)
+    };
+    List<string> BorderColorVaardigheid = new List<string> {
+        ChartColor.FromRgba(0, 0,255, 1f)
+    };
+
+    async Task<RadarChartDataset<double>[]> GetRadarChartDataset()
+    {
+        RadarChartDataset<double> dataset1 = null;
+        RadarChartDataset<double> dataset2 = null;
+        RadarChartDataset<double> dataset3 = null;
+        List<double> data = new List<double>();
+
+        Random random = new Random();
+
+        dataset1 = new RadarChartDataset<double>
+        {
+            Label = "LabelA",
+            Data = new List<double> { random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(),
+                        random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble() },
+            BackgroundColor = BackgroundColorCoreValue,
+            BorderColor = BorderColorCoreValue,
+            Fill = true,
+            LineTension = 0
+
+        };
+        dataset2 = new RadarChartDataset<double>
+        {
+            Label = "LabelB",
+            Data = new List<double> { random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(),
+            random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble()
+},
+            BackgroundColor = BackgroundColorRole,
+            BorderColor = BorderColorRole,
+            Fill = true,
+            LineTension = 0
+
+        };
+        dataset3 = new RadarChartDataset<double>
+        {
+            Label = "LabelC",
+            Data = new List<double> { random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(),
+    random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble()
+},
+            BackgroundColor = BackgroundColorVaardigheid,
+            BorderColor = BorderColorVaardigheid,
+            Fill = true,
+            LineTension = 0
+
+
+        };
+
+        return new RadarChartDataset<double>[] {
+dataset1, dataset2, dataset3
+};
+    }
+}
